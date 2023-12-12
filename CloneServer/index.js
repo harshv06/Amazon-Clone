@@ -12,8 +12,8 @@ require('./models/users')
 const authRoutes=require('./routes/authRoutes')
 const authTokenRequired=require('./middleWares/authTokenRequired')
 app.use(authRoutes)
-app.get('/',(req,res)=>{
-    res.send("This is Login page")
+app.get('/',authTokenRequired,(req,res)=>{
+    res.send(req.user)
 })
 
 
