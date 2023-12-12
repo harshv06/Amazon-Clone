@@ -7,19 +7,54 @@ import {
   KeyboardAvoidingView,
   TextInput,
   Pressable,
+  Alert
 } from "react-native";
 import React, { useState } from "react";
-import { MaterialIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { Fontisto } from "@expo/vector-icons";
-import { Touchable } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { SimpleLineIcons } from '@expo/vector-icons';
 
-const LoginScreen = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+import { useNavigation } from "@react-navigation/native";
+import { SimpleLineIcons } from "@expo/vector-icons";
+
+const RegisterScreen = () => {
   const navigation = useNavigation();
+  const [errMsg, setErr] = useState(null);
+  const [udata, setData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const sendToBackend = () => {
+    if (udata.name == "" || udata.password == "" || udata.email == "") {
+      setErr("Please Fill all feilds");
+      return;
+    } else {
+      fetch("http://192.168.0.108:4000/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(udata),
+      })
+        .then((res) => res.json())
+        .then((userdata) => {
+          if (userdata.error) {
+            setErr(userdata.error);
+          }else{
+            Alert.alert(
+              'Success',
+              'User registration successful!',
+              [{ text: 'OK', onPress: ()=>navigation.navigate('LoginScreen') }]
+            );
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
   return (
     <SafeAreaView
       style={{ alignItems: "center", flex: 1, backgroundColor: "#fff" }}
@@ -47,8 +82,18 @@ const LoginScreen = () => {
           </Text>
         </View>
 
+        {errMsg ? (
+          <View style={{ backgroundColor: "#D0D0D0", top: 30, padding: 10 }}>
+            <Text
+              style={{ textAlign: "center", fontWeight: "bold", fontSize: 15 }}
+            >
+              {errMsg}
+            </Text>
+          </View>
+        ) : null}
+
         <View style={{ marginTop: 100, gap: 40 }}>
-        <View
+          <View
             style={{
               flexDirection: "row",
               alignItems: "center",
@@ -58,12 +103,17 @@ const LoginScreen = () => {
               borderRadius: 5,
             }}
           >
-            <SimpleLineIcons name="user" size={30} color="gray" style={{marginLeft:10}} />
+            <SimpleLineIcons
+              name="user"
+              size={30}
+              color="gray"
+              style={{ marginLeft: 10 }}
+            />
             <TextInput
-              value={email}
               style={{ width: 280, height: 40 }}
               placeholder="Enter your Name"
-              onChangeText={(text) => setEmail(text)}
+              onChangeText={(text) => setData({ ...udata, name: text })}
+              onFocus={()=>setErr(null)}
             ></TextInput>
           </View>
 
@@ -84,14 +134,12 @@ const LoginScreen = () => {
               style={{ marginLeft: 10 }}
             />
             <TextInput
-              value={email}
               style={{ width: 280, height: 40 }}
               placeholder="Enter your Email"
-              onChangeText={(text) => setEmail(text)}
+              onChangeText={(text) => setData({ ...udata, email: text })}
+              onFocus={()=>setErr(null)}
             ></TextInput>
           </View>
-
-
 
           <View
             style={{
@@ -110,28 +158,14 @@ const LoginScreen = () => {
               style={{ marginLeft: 10 }}
             />
             <TextInput
-              value={password}
               secureTextEntry={true}
               placeholder="Enter your Password"
-              onChangeText={(text) => setPassword(text)}
+              onChangeText={(text) => setData({ ...udata, password: text })}
+              onFocus={()=>setErr(null)}
               style={{ width: 280, height: 40 }}
             ></TextInput>
           </View>
         </View>
-
-        {/* <View
-          style={{
-            marginVertical: 20,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Text>Keep Me Logged In</Text>
-          <Text style={{ color: "#007FFF", fontWeight: "600" }}>
-            Forgot Password ?
-          </Text>
-        </View> */}
 
         <View style={{ marginTop: 80 }}>
           <Pressable
@@ -143,6 +177,9 @@ const LoginScreen = () => {
               marginRight: "auto",
               padding: 10,
               borderRadius: 8,
+            }}
+            onPress={() => {
+              sendToBackend();
             }}
           >
             <Text
@@ -171,6 +208,17 @@ const LoginScreen = () => {
   );
 };
 
-export default LoginScreen;
+export default RegisterScreen;
 
 const styles = StyleSheet.create({});
+
+// const RegisterScreen = () => {
+//
+
+//   };
+//   return (
+//
+//   );
+// };
+
+// export default RegisterScreen;
