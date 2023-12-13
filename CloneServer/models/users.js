@@ -16,7 +16,12 @@ const userSchema=new mongoose.Schema({
     password:{
         type:String,
         required:true
-    }
+    },
+    Verified:{
+        type:Boolean,
+        default:false
+    },
+    VerificationCode:String
 })
 
 userSchema.pre('save',async function (next){

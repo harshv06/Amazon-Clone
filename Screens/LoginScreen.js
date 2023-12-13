@@ -16,9 +16,33 @@ import { Touchable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 const LoginScreen = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [data,setData]=useState({
+    email:"",
+    password:""
+  })
+
+  const [err,setErr]=useState(null)
   const navigation = useNavigation()
+
+  const handleBackend=()=>{
+    if (data.email=="" || data.password==""){
+      setErr("Please Fill All Fields")
+    }else{
+      fetch('http://192.168.0.108:4000/signin',{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body: JSON.stringify(data)
+      }).then(res=>res.json()).then((userdata=>{
+        if(userdata.error){
+          setErr(userdata.error)
+        }else{
+          console.log("done")
+        }
+      }))
+    }
+  }
   return (
     <SafeAreaView
       style={{ alignItems: "center", flex: 1, backgroundColor: "#fff" }}
@@ -46,6 +70,10 @@ const LoginScreen = () => {
           </Text>
         </View>
 
+        {
+          err?<View style={{top:30,padding:10,backgroundColor:'#d0d0d0'}}><Text style={{textAlign:'center',fontSize:15,fontWeight:'bold'}}>{err}</Text></View>:null
+        }
+
         <View style={{ marginTop: 100, gap: 40 }}>
           <View
             style={{
@@ -64,10 +92,9 @@ const LoginScreen = () => {
               style={{ marginLeft: 10 }}
             />
             <TextInput
-              value={email}
               style={{ width: 280, height: 40 }}
               placeholder="enter your Email"
-              onChangeText={(text) => setEmail(text)}
+              onChangeText={(text) => setData({...data,email:text})}
             ></TextInput>
           </View>
 
@@ -88,10 +115,9 @@ const LoginScreen = () => {
               style={{ marginLeft: 10 }}
             />
             <TextInput
-              value={password}
               secureTextEntry={true}
               placeholder="enter your Password"
-              onChangeText={(text) => setPassword(text)}
+              onChangeText={(text) => setData({...data,password:text})}
               style={{ width: 280, height: 40 }}
             ></TextInput>
           </View>
@@ -122,6 +148,7 @@ const LoginScreen = () => {
               padding: 10,
               borderRadius: 8,
             }}
+            onPress={()=>handleBackend()}
           >
             <Text style={{fontSize:17,textAlign:'center',color:'white',fontWeight:'500'}}>Login</Text>
           </Pressable>

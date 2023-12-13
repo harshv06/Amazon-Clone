@@ -30,7 +30,7 @@ const RegisterScreen = () => {
       setErr("Please Fill all feilds");
       return;
     } else {
-      fetch("http://192.168.0.108:4000/signup", {
+      fetch("http://192.168.0.108:4000/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
