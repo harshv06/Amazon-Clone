@@ -16,8 +16,8 @@ const sendVerificationEmail = async (email, code) => {
     secure: false,
     requireTLS: true,
     auth: {
-      user: process.env.user,
-      pass: process.env.pass,
+      user: process.env.userID,
+      pass: process.env.passID,
     },
   });
 
