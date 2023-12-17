@@ -7,20 +7,25 @@ import {
   KeyboardAvoidingView,
   TextInput,
   Pressable,
+  Alert,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { Fontisto } from "@expo/vector-icons";
 import { Touchable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { ScrollView } from "react-native";
 
 const LoginScreen = () => {
   const [data,setData]=useState({
     email:"",
     password:""
   })
-
+useEffect(()=>{
+  setErr(null)
+  
+})
   const [err,setErr]=useState(null)
   const navigation = useNavigation()
 
@@ -38,7 +43,7 @@ const LoginScreen = () => {
         if(userdata.error){
           setErr(userdata.error)
         }else{
-          console.log("done")
+          Alert.alert("Success","Login Successfull",[{text:"Ok",onPress:()=>{console.log("Done")}}])
         }
       }))
     }
@@ -47,6 +52,7 @@ const LoginScreen = () => {
     <SafeAreaView
       style={{ alignItems: "center", flex: 1, backgroundColor: "#fff" }}
     >
+        <ScrollView automaticallyAdjustKeyboardInsets={true}>
       <View>
         <Image
           style={{ height: 150, width: 150 }}
@@ -56,7 +62,6 @@ const LoginScreen = () => {
         />
       </View>
 
-      <KeyboardAvoidingView>
         <View style={{ alignItems: "center" }}>
           <Text
             style={{
@@ -157,7 +162,7 @@ const LoginScreen = () => {
             <Text style={{color:'gray'}}>Don't have a account ? Sign up</Text>
           </Pressable>
         </View>
-      </KeyboardAvoidingView>
+      </ScrollView>
     </SafeAreaView>
   );
 };

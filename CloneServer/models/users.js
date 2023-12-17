@@ -21,7 +21,6 @@ const userSchema=new mongoose.Schema({
         type:Boolean,
         default:false
     },
-    VerificationCode:String
 })
 
 userSchema.pre('save',async function (next){

@@ -7,14 +7,15 @@ import {
   KeyboardAvoidingView,
   TextInput,
   Pressable,
-  Alert
+  Alert,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
 import { Fontisto } from "@expo/vector-icons";
 
 import { useNavigation } from "@react-navigation/native";
 import { SimpleLineIcons } from "@expo/vector-icons";
+import { ScrollView } from "react-native";
 
 const RegisterScreen = () => {
   const navigation = useNavigation();
@@ -25,12 +26,15 @@ const RegisterScreen = () => {
     password: "",
   });
 
+  useEffect(() => {
+    setErr(null);
+  }, []);
   const sendToBackend = () => {
     if (udata.name == "" || udata.password == "" || udata.email == "") {
       setErr("Please Fill all feilds");
       return;
     } else {
-      fetch("http://192.168.0.108:4000/register", {
+      fetch("http://192.168.0.108:4000/verify", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -39,15 +43,25 @@ const RegisterScreen = () => {
       })
         .then((res) => res.json())
         .then((userdata) => {
+          console.log("hi");
           if (userdata.error) {
             setErr(userdata.error);
-          }else{
-            Alert.alert(
-              'Success',
-              'User registration successful!',
-              [{ text: 'OK', onPress: ()=>navigation.navigate('LoginScreen') }]
-            );
+          } else {
+            console.log(userdata);
+            Alert.alert("Success", "Verification Code Sent To User Mail", [
+              {
+                text: "OK",
+                onPress: () => {
+                  navigation.navigate("ValidationScreen", {
+                    data: userdata.data,
+                  });
+                },
+              },
+            ]);
           }
+        })
+        .catch((err) => {
+          console.log(err);
         })
         .catch((err) => {
           console.log(err);
@@ -59,16 +73,16 @@ const RegisterScreen = () => {
     <SafeAreaView
       style={{ alignItems: "center", flex: 1, backgroundColor: "#fff" }}
     >
-      <View>
-        <Image
-          style={{ height: 150, width: 150 }}
-          source={{
-            uri: "https://assets.stickpng.com/thumbs/6160562276000b00045a7d97.png",
-          }}
-        />
-      </View>
+      <ScrollView automaticallyAdjustKeyboardInsets={true}>
+        <View style={{ alignItems: "center" }}>
+          <Image
+            style={{ height: 150, width: 150 }}
+            source={{
+              uri: "https://assets.stickpng.com/thumbs/6160562276000b00045a7d97.png",
+            }}
+          />
+        </View>
 
-      <KeyboardAvoidingView>
         <View style={{ alignItems: "center" }}>
           <Text
             style={{
@@ -110,10 +124,11 @@ const RegisterScreen = () => {
               style={{ marginLeft: 10 }}
             />
             <TextInput
+              value={udata.name}
               style={{ width: 280, height: 40 }}
               placeholder="Enter your Name"
               onChangeText={(text) => setData({ ...udata, name: text })}
-              onFocus={()=>setErr(null)}
+              onFocus={() => setErr(null)}
             ></TextInput>
           </View>
 
@@ -134,10 +149,11 @@ const RegisterScreen = () => {
               style={{ marginLeft: 10 }}
             />
             <TextInput
+              value={udata.email}
               style={{ width: 280, height: 40 }}
               placeholder="Enter your Email"
               onChangeText={(text) => setData({ ...udata, email: text })}
-              onFocus={()=>setErr(null)}
+              onFocus={() => setErr(null)}
             ></TextInput>
           </View>
 
@@ -158,10 +174,11 @@ const RegisterScreen = () => {
               style={{ marginLeft: 10 }}
             />
             <TextInput
+              value={udata.password}
               secureTextEntry={true}
               placeholder="Enter your Password"
               onChangeText={(text) => setData({ ...udata, password: text })}
-              onFocus={()=>setErr(null)}
+              onFocus={() => setErr(null)}
               style={{ width: 280, height: 40 }}
             ></TextInput>
           </View>
@@ -196,14 +213,14 @@ const RegisterScreen = () => {
 
           <Pressable
             style={{ marginTop: 15, alignItems: "center" }}
-            onPress={() => navigation.goBack()}
+            onPress={() => navigation.navigate("LoginScreen")}
           >
             <Text style={{ color: "gray" }}>
               Already have a account ? Login in
             </Text>
           </Pressable>
         </View>
-      </KeyboardAvoidingView>
+      </ScrollView>
     </SafeAreaView>
   );
 };
