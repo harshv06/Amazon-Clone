@@ -1,4 +1,5 @@
 import {
+  FlatList,
   Image,
   Platform,
   Pressable,
@@ -9,12 +10,14 @@ import {
   TextInput,
   View,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { SliderBox } from "react-native-image-slider-box";
 import { Feather } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
+import DropDownPicker from "react-native-dropdown-picker";
+import { useNavigation } from "@react-navigation/native";
 
 const list = [
   {
@@ -189,6 +192,30 @@ const offers = [
   },
 ];
 const HomeScreen = () => {
+  const [products, setProducts] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [category, setCategory] = useState("jewelery");
+  const [items, setItem] = useState([
+    { label: "Men's Clothing", value: "Men's Clothing" },
+    { label: "jewelery", value: "jewelery" },
+    { label: "electronics", value: "electronics" },
+    { label: "women's clothing", value: "women's clothing" },
+  ]);
+  const navigation=useNavigation()
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        fetch("https://fakestoreapi.com/products")
+          .then((res) => res.json())
+          .then((data) => setProducts(data));
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
     <SafeAreaView
       style={{
@@ -307,7 +334,7 @@ const HomeScreen = () => {
         </View>
 
         <View
-          style={{ height: 5, backgroundColor: "gray", marginTop: 20 }}
+          style={{ height: 3, backgroundColor: "gray", marginTop: 20 }}
         ></View>
 
         <Text
@@ -323,16 +350,36 @@ const HomeScreen = () => {
 
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {offers.map((item, index) => (
-            <Pressable key={index} style={{ alignItems: "center" }}>
+            <Pressable key={index} style={{ alignItems: "center" }}
+            onPress={()=>{navigation.navigate("Info",{
+              id:item?.id,
+              title:item?.title,
+              price: item?.price,
+              carouselImages: item.carouselImages,
+              color: item?.color,
+              size: item?.size,
+              oldPrice: item?.oldPrice,
+              item: item,
+            })}}
+            >
               <Image
                 source={{ uri: item.image }}
                 style={{ height: 150, width: 150, resizeMode: "contain" }}
               />
-              <View style={{backgroundColor:'red',padding:8,margin:10,borderRadius:5,width:120,alignItems:"center"}}>
+              <View
+                style={{
+                  backgroundColor: "red",
+                  padding: 8,
+                  margin: 10,
+                  borderRadius: 5,
+                  width: 120,
+                  alignItems: "center",
+                }}
+              >
                 <Text
                   style={{
-                    color:'#fff',
-                    fontWeight:'500'
+                    color: "#fff",
+                    fontWeight: "500",
                   }}
                 >
                   Upto {item.offer}
@@ -341,6 +388,86 @@ const HomeScreen = () => {
             </Pressable>
           ))}
         </ScrollView>
+
+        <View
+          style={{ height: 3, backgroundColor: "gray", marginTop: 20 }}
+        ></View>
+
+        <View
+          style={{
+            borderColor: "#B7B7B7",
+            height: 30,
+            marginBottom: open ? 200 : 10,
+            marginTop: 20,
+            marginLeft: 10,
+            width: "50%",
+          }}
+        >
+          <DropDownPicker
+            style={{ height: 50, backgroundColor: "#fff" }}
+            open={open}
+            value={category}
+            items={items}
+            setOpen={setOpen}
+            placeholder="Choose"
+            setValue={setCategory}
+            setItems={setItem}
+            zIndex={3000}
+            zIndexInverse={1000}
+          />
+        </View>
+
+        <Pressable
+          style={{
+            flexDirection: "row",
+            flexWrap: "wrap",
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: 10,
+          }}
+        >
+          {products
+            ?.filter((item) => item.category === category)
+            .map((item, index) => (
+              <Pressable style={{ margin: 20 }} key={index}>
+                <Image
+                  source={{ uri: item.image }}
+                  style={{ width: 150, height: 200, resizeMode: "contain" }}
+                />
+                <Text
+                  numberOfLines={2}
+                  style={{ width: 150, marginTop: 10, fontWeight: "500" }}
+                >
+                  {item.title}
+                </Text>
+                <View
+                  style={{
+                    marginTop: 6,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Text style={{ fontWeight: "bold" }}>₹{item.price}</Text>
+                  <Text style={{ color: "#FFC72C", fontWeight: "700" }}>
+                    {item.rating.rate} Ratings
+                  </Text>
+                </View>
+                <Pressable
+                  style={{
+                    backgroundColor: "#FFC72C",
+                    borderRadius: 10,
+                    alignItems: "center",
+                    padding: 15,
+                    marginTop: 10,
+                  }}
+                >
+                  <Text style={{ color: "#fff", fontWeight: "600" }}>
+                    Add to Cart
+                  </Text>
+                </Pressable>
+              </Pressable>
+            ))}
+        </Pressable>
       </ScrollView>
     </SafeAreaView>
   );
