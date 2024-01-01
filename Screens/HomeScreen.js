@@ -18,6 +18,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import DropDownPicker from "react-native-dropdown-picker";
 import { useNavigation } from "@react-navigation/native";
+import { useSelector } from "react-redux";
 
 const list = [
   {
@@ -215,6 +216,8 @@ const HomeScreen = () => {
     };
     fetchData();
   }, []);
+  const cart=useSelector((state)=>state.cart.cart)
+  console.log(cart)
 
   return (
     <SafeAreaView

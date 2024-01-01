@@ -16,12 +16,21 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../Redux/CartReducer";
 
 const ProductInfoScreen = () => {
   const navigation = useNavigation();
   const routes = useRoute();
   const { width } = Dimensions.get("window");
   const height = (width * 100) / 100;
+  const dispatch=useDispatch()
+  const addItem=(item)=>{
+    dispatch(addToCart(item))
+  }
+
+  const cart=useSelector((state)=>state.cart.cart)
+  console.log(cart)
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <ScrollView>
@@ -203,6 +212,7 @@ const ProductInfoScreen = () => {
 
         <View style={{ alignItems: "center", marginTop: 10 }}>
           <Pressable
+          onPress={()=>addItem(routes.params.item)}
             style={{
               backgroundColor: "#FFAC1C",
               padding: 15,
