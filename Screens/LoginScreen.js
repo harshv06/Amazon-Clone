@@ -10,13 +10,11 @@ import {
   Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { MaterialIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { Fontisto } from "@expo/vector-icons";
-import { Touchable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { ScrollView } from "react-native";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const LoginScreen = () => {
   const [data,setData]=useState({
     email:"",
@@ -24,8 +22,7 @@ const LoginScreen = () => {
   })
 useEffect(()=>{
   setErr(null)
-  
-})
+},[])
   const [err,setErr]=useState(null)
   const navigation = useNavigation()
 
@@ -33,7 +30,7 @@ useEffect(()=>{
     if (data.email=="" || data.password==""){
       setErr("Please Fill All Fields")
     }else{
-      fetch('http://192.168.0.108:4000/signin',{
+      fetch('http://192.168.0.104:4000/signin',{
         method:'POST',
         headers:{
           'Content-Type':'application/json'
@@ -41,9 +38,12 @@ useEffect(()=>{
         body: JSON.stringify(data)
       }).then(res=>res.json()).then((userdata=>{
         if(userdata.error){
+          console.log(userdata.error)
           setErr(userdata.error)
         }else{
-          Alert.alert("Success","Login Successfull",[{text:"Ok",onPress:()=>{console.log("Done")}}])
+          console.log(userdata)
+          AsyncStorage.setItem("authToken",userdata.data)
+          Alert.alert("Success","Login Successfull",[{text:"Ok",onPress:()=>{navigation.navigate('Main')}}])
         }
       }))
     }

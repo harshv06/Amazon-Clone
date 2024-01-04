@@ -21,6 +21,30 @@ const userSchema=new mongoose.Schema({
         type:Boolean,
         default:false
     },
+    addresses:[
+        {
+            name:String,
+            mobileNo:String,
+            houseNo:String,
+            street:String,
+            landMark:String,
+            city:String,
+            country:String,
+            postalCode:String
+        }
+    ],
+
+    orders:[
+        {
+            type:mongoose.Types.ObjectId,
+            ref:'Orders'
+        }
+    ],
+
+    createdAt:{
+        type:Date,
+        default:Date.now
+    }
 })
 
 userSchema.pre('save',async function (next){
@@ -32,4 +56,5 @@ userSchema.pre('save',async function (next){
     next();
 })
 
-mongoose.model("User",userSchema);
+const User=mongoose.model("User",userSchema);
+module.exports=User

@@ -34,7 +34,7 @@ const RegisterScreen = () => {
       setErr("Please Fill all feilds");
       return;
     } else {
-      fetch("http://192.168.0.108:4000/verify", {
+      fetch("http://192.168.0.104:4000/verify", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -43,7 +43,6 @@ const RegisterScreen = () => {
       })
         .then((res) => res.json())
         .then((userdata) => {
-          console.log("hi");
           if (userdata.error) {
             setErr(userdata.error);
           } else {

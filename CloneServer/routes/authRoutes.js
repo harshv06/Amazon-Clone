@@ -56,7 +56,6 @@ router.post("/register", (req, res) => {
         });
         try {
           await user.save();
-          const token = jwt.sign({ _id: user._id }, process.env.jwt_secret);
           res.status(200).send({message:"Registration Done"});
         } catch (err) {
           return res.status(422).send({ error: "Failed while saving user" });
@@ -86,7 +85,8 @@ router.post("/signin", async (req, res) => {
     bcrypt.compare(password, savedUser.password, (err, result) => {
       if (result) {
         console.log("Logged In");
-        return res.status(422).send({ message: "Logged IN" });
+        const token = jwt.sign({ _id: savedUser._id }, process.env.jwt_secret);
+        return res.status(422).send({ message: "Logged IN",data:token });
       } else {
         return res.status(422).send({ message: "Invalid Credentials2" });
       }

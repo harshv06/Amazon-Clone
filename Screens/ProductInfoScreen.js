@@ -9,28 +9,42 @@ import {
   ImageBackground,
   Dimensions,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../Redux/CartReducer";
+import Animated, { useSharedValue, withRepeat, withSpring, withTiming } from "react-native-reanimated";
+import SelectDropdown from "react-native-select-dropdown";
+
 
 const ProductInfoScreen = () => {
   const navigation = useNavigation();
   const routes = useRoute();
   const { width } = Dimensions.get("window");
   const height = (width * 100) / 100;
-  const dispatch=useDispatch()
-  const addItem=(item)=>{
-    dispatch(addToCart(item))
-  }
-
-  const cart=useSelector((state)=>state.cart.cart)
-  console.log(cart)
+  const dispatch = useDispatch();
+  const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const [cartItems, setCartItems] = useState(0);
+  const cart = useSelector((state) => state.cart.cart);
+  const addItem = (item) => {
+    const modifiedItem={
+      ...item,
+      Total:cartItems
+    }
+    dispatch(addToCart(modifiedItem));
+  };
+  // console.log(cart[0].quantity)
+  const PressBtn = Animated.createAnimatedComponent(Pressable);
+  const textScale=useSharedValue(1)
+  const dot1=useSharedValue(0)
+  const dot2=useSharedValue(0)
+  const dot3=useSharedValue(0)
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <ScrollView>
@@ -210,9 +224,35 @@ const ProductInfoScreen = () => {
           IN STOCK
         </Text>
 
+        <SelectDropdown
+          data={numbers}
+          onSelect={(item,idx)=>{
+            setCartItems(item)
+            console.log("Cart Items:",cartItems,item)
+          }
+        }
+          defaultValue={0}
+          buttonStyle={{height:40,marginHorizontal:20,borderRadius:10,marginVertical:10,width:350}}
+          rowStyle={{width:340}}
+          selectedRowStyle={{borderWidth:1,borderColor:'black'}}
+          dropdownStyle={{width:340,alignItems:'center'}}
+        />
         <View style={{ alignItems: "center", marginTop: 10 }}>
-          <Pressable
-          onPress={()=>addItem(routes.params.item)}
+          <PressBtn
+            // onPress={() => addItem(routes.params.item)}
+            onPress={() => {
+              textScale.value=withTiming(0,{duration:200})
+              addItem(routes.params.item)
+              dot1.value=withRepeat(withTiming(1,{duration:800}),3)
+              setTimeout(()=>dot2.value=withRepeat(withTiming(1,{duration:800}),3),100)
+              setTimeout(()=>dot3.value=withRepeat(withTiming(1,{duration:800}),3),200)
+              setTimeout(()=>{
+                dot1.value=0
+                dot2.value=0
+                dot3.value=0
+                textScale.value=1
+              },2000)
+            }}
             style={{
               backgroundColor: "#FFAC1C",
               padding: 15,
@@ -221,8 +261,13 @@ const ProductInfoScreen = () => {
               borderRadius: 30,
             }}
           >
-            <Text>Add to cart</Text>
-          </Pressable>
+            <Animated.Text style={{transform:[{scale:textScale}]}}>Add To Cart</Animated.Text>
+            <View style={{width:40,height:10,flexDirection:'row',justifyContent:'space-evenly',position:'absolute',top:20}}>
+              <Animated.View style={{backgroundColor:'gray',height:8,width:8,borderRadius:100,transform:[{scale:dot1}]}}></Animated.View>
+              <Animated.View style={{backgroundColor:'gray',height:8,width:8,borderRadius:100,transform:[{scale:dot2}]}}></Animated.View>
+              <Animated.View style={{backgroundColor:'gray',height:8,width:8,borderRadius:100,transform:[{scale:dot3}]}}></Animated.View>
+            </View>
+          </PressBtn>
 
           <Pressable
             style={{

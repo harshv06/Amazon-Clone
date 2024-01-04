@@ -10,9 +10,9 @@ export const CartSlice=createSlice({
         addToCart:(state,action)=>{
             const itemPresent=state.cart.find((item)=>item.id===action.payload.id);
             if(itemPresent){
-                itemPresent.quantity++
+                itemPresent.quantity=itemPresent.quantity+action.payload.Total
             }else{
-                state.cart.push({...action.payload,quantity:1})
+                state.cart.push({...action.payload,quantity:action.payload.Total})
             }
         },
     }
