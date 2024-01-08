@@ -5,6 +5,7 @@ const User = mongoose.model("User");
 const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
 const nodemailer = require("nodemailer");
+const crypto = require('crypto')
 
 require("dotenv").config();
 
@@ -68,10 +69,12 @@ router.post("/register", (req, res) => {
 });
 
 router.post("/signin", async (req, res) => {
+  const generateKey=()=>{
+    const key=crypto.randomBytes(32).toString('hex')
+    return key
+  }
   const { email, password } = req.body;
-  console.log(req.body);
   if (!email || !password) {
-    console.log(email, password);
     return res.status(422).send({ error: "Pease Fill All The Fields" });
   }
 
@@ -84,8 +87,11 @@ router.post("/signin", async (req, res) => {
   try {
     bcrypt.compare(password, savedUser.password, (err, result) => {
       if (result) {
-        console.log("Logged In");
-        const token = jwt.sign({ _id: savedUser._id }, process.env.jwt_secret);
+        const key=generateKey()
+        console.log("Key",key)
+        console.log("Id",savedUser._id)
+        const token = jwt.sign({ userId: savedUser._id }, key);
+        console.log(token)
         return res.status(422).send({ message: "Logged IN",data:token });
       } else {
         return res.status(422).send({ message: "Invalid Credentials2" });
@@ -114,4 +120,25 @@ router.post("/verify", async (req, res) => {
   });
 });
 
+router.post("/addAddress",async(req,res)=>{
+  const {Uid}=req.body
+  console.log(req.body)
+  const user=await User.findById(Uid)
+  if(!user){
+    return res.send({error:"User Not Found"})
+  }else{
+    try{
+      const {name,street,houseNo,landMark,mobileNo,postalCode}=req.body
+      const address={
+        name,mobileNo,houseNo,landMark,postalCode,street
+      }
+      console.log(address)
+      user.addresses.push(address)
+      await user.save()
+      return res.send({message:"User Saved"})
+    }catch(err){
+      return res.send({error:"Error While Saving"})
+    }
+  }
+})
 module.exports = router;

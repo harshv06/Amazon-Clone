@@ -20,8 +20,16 @@ const LoginScreen = () => {
     email:"",
     password:""
   })
+
+  const checkLoginStatus=async()=>{
+    const token=await AsyncStorage.getItem('authToken')
+    if(token){
+      navigation.replace('Main')
+    }
+  }
 useEffect(()=>{
   setErr(null)
+  checkLoginStatus()
 },[])
   const [err,setErr]=useState(null)
   const navigation = useNavigation()
@@ -41,7 +49,7 @@ useEffect(()=>{
           console.log(userdata.error)
           setErr(userdata.error)
         }else{
-          console.log(userdata)
+          console.log(userdata.data)
           AsyncStorage.setItem("authToken",userdata.data)
           Alert.alert("Success","Login Successfull",[{text:"Ok",onPress:()=>{navigation.navigate('Main')}}])
         }

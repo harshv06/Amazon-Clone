@@ -16,64 +16,63 @@ import { useSelector } from "react-redux";
 import AddAddressScreen from "../Screens/AddAddressScreen";
 import Address from "../Screens/Address";
 
+
 const StackNavigator = () => {
-  const stack = createNativeStackNavigator();
-  const tab = createBottomTabNavigator();
-  // const data=useSelector()
-
-  function BottomTab(){
-    return(
-      <tab.Navigator>
-      <tab.Screen
-        options={{
-          headerShown: false,
-          tabBarLabelStyle: { color: "#008E97" },
-          tabBarIcon: ({ focused }) =>
-            focused ? (
-              <AntDesign name="home" size={24} color="#008E97" />
-            ) : (
-              <AntDesign name="home" size={24} color="black" />
-            ),
-        }}
-        name="Home"
-        component={HomeScreen}
-      />
-
-      <tab.Screen
-        options={{
-          headerShown: false,
-          tabBarLabelStyle: { color: "#008E97" },
-          tabBarIcon: ({ focused }) =>
-            focused ? (
-              <Ionicons name="person-outline" size={24} color="#008E97" />
-            ) : (
-              <Ionicons name="person-outline" size={24} color="black" />
-            ),
-        }}
-        name="Profile"
-        component={ProfileScreen}
-      />
-      <tab.Screen
-        options={{
-          headerShown: false,
-          tabBarLabelStyle: { color: "#008E97" },
-          tabBarIcon: ({ focused }) =>
-            focused ? (
-              <AntDesign name="shoppingcart" size={24} color="#008E97" />
-            ) : (
-              <AntDesign name="shoppingcart" size={24} color="black" />
-            ),
-        }}
-        name="Cart"
-        component={CartScreen}
-      />
-    </tab.Navigator>
-    )
+  function BottomTab() {
+    const tab = createBottomTabNavigator();
+    return (
+        <tab.Navigator>
+          <tab.Screen
+            options={{
+              headerShown: false,
+              tabBarLabelStyle: { color: "#008E97" },
+              tabBarIcon: ({ focused }) =>
+                focused ? (
+                  <AntDesign name="home" size={24} color="#008E97" />
+                ) : (
+                  <AntDesign name="home" size={24} color="black" />
+                ),
+            }}
+            name="Home"
+            component={HomeScreen}
+          />
+  
+          <tab.Screen
+            options={{
+              headerShown: false,
+              tabBarLabelStyle: { color: "#008E97" },
+              tabBarIcon: ({ focused }) =>
+                focused ? (
+                  <Ionicons name="person-outline" size={24} color="#008E97" />
+                ) : (
+                  <Ionicons name="person-outline" size={24} color="black" />
+                ),
+            }}
+            name="Profile"
+            component={ProfileScreen}
+          />
+          <tab.Screen
+            options={{
+              headerShown: false,
+              tabBarLabelStyle: { color: "#008E97" },
+              tabBarIcon: ({ focused }) =>
+                focused ? (
+                  <AntDesign name="shoppingcart" size={24} color="#008E97" />
+                ) : (
+                  <AntDesign name="shoppingcart" size={24} color="black" />
+                ),
+            }}
+            name="Cart"
+            component={CartScreen}
+          />
+        </tab.Navigator>
+    );
   }
+  const stack = createNativeStackNavigator();
   return (
     <NavigationContainer>
       <stack.Navigator>
-      <stack.Screen
+        <stack.Screen
           name="LoginScreen"
           component={LoginScreen}
           options={{ headerShown: false }}
@@ -113,6 +112,7 @@ const StackNavigator = () => {
     </NavigationContainer>
   );
 };
+// export function BottomTab()
 
 export default StackNavigator;
 

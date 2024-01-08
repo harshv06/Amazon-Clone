@@ -1,11 +1,23 @@
 import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import Header from "../Components/Header";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useSelector } from "react-redux";
+import { UserContext, UserType } from "../userContext";
 
 const AddAddressScreen = () => {
     const navigation=useNavigation()
+    const [address,setAddress]=useState("")
+    const {userId,setUserId}=useContext(UserType)
+
+    const fetchaddress=()=>{
+      console.log(userId)
+    }
+
+    useFocusEffect(useCallback(()=>{
+      fetchaddress()
+    },[]))
   return (
     <SafeAreaView>
       <Header />
