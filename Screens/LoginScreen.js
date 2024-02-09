@@ -38,7 +38,7 @@ useEffect(()=>{
     if (data.email=="" || data.password==""){
       setErr("Please Fill All Fields")
     }else{
-      fetch('http://192.168.0.104:4000/signin',{
+      fetch('http://192.168.0.103:4000/signin',{
         method:'POST',
         headers:{
           'Content-Type':'application/json'
@@ -63,7 +63,7 @@ useEffect(()=>{
         <ScrollView automaticallyAdjustKeyboardInsets={true}>
       <View>
         <Image
-          style={{ height: 150, width: 150 }}
+          style={{ height: 150, width: 150,alignSelf:'center' }}
           source={{
             uri: "https://assets.stickpng.com/thumbs/6160562276000b00045a7d97.png",
           }}

@@ -34,7 +34,7 @@ const RegisterScreen = () => {
       setErr("Please Fill all feilds");
       return;
     } else {
-      fetch("http://192.168.0.104:4000/verify", {
+      fetch("http://192.168.0.103:4000/verify", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -72,7 +72,7 @@ const RegisterScreen = () => {
     <SafeAreaView
       style={{ alignItems: "center", flex: 1, backgroundColor: "#fff" }}
     >
-      <ScrollView automaticallyAdjustKeyboardInsets={true}>
+      <ScrollView automaticallyAdjustKeyboardInsets={true} automaticallyAdjustContentInsets={true} style={{flex:1}}>
         <View style={{ alignItems: "center" }}>
           <Image
             style={{ height: 150, width: 150 }}

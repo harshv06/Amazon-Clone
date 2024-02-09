@@ -7,7 +7,7 @@ const bodyParser=require('body-parser')
 const jwt=require('jsonwebtoken')
 app.use(cors())
 app.use(bodyParser.json())
-
+require('dotenv').config()
 require('./db')
 require('./models/users')
 

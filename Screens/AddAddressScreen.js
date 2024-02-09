@@ -4,20 +4,44 @@ import { MaterialIcons } from "@expo/vector-icons";
 import Header from "../Components/Header";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
-import { UserContext, UserType } from "../userContext";
+import { UserType } from "../userContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const AddAddressScreen = () => {
-    const navigation=useNavigation()
-    const [address,setAddress]=useState("")
-    const {userId,setUserId}=useContext(UserType)
-
-    const fetchaddress=()=>{
-      console.log(userId)
+  const navigation = useNavigation();
+  const [address, setAddress] = useState([]);
+  const { userId, setUserId } = useContext(UserType);
+  const fetchaddress = () => {
+    let id = userId;
+    console.log("Running",id);
+    console.log(typeof(id));
+    try {
+      fetch(`http://192.168.0.103:4000/getAddress/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => {
+          console.log("Response:",res)
+        })
+        .then((add) => {
+          console.log(add);
+          setAddress(add);
+        });
+    } catch {
+      console.log("Failed");
     }
+  };
 
-    useFocusEffect(useCallback(()=>{
-      fetchaddress()
-    },[]))
+  useEffect(()=>{
+    fetchaddress()
+  },[])
+  useFocusEffect(
+    useCallback(() => {
+      fetchaddress();
+    }, [])
+  );
   return (
     <SafeAreaView>
       <Header />
@@ -37,7 +61,7 @@ const AddAddressScreen = () => {
           borderLeftWidth: 0,
           borderRightWidth: 0,
         }}
-        onPress={()=>navigation.navigate('Address')}
+        onPress={() => navigation.navigate("Address")}
       >
         <Text style={{ marginLeft: 8 }}>Add a new Address</Text>
         <MaterialIcons name="keyboard-arrow-right" size={24} color="black" />

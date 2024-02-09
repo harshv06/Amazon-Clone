@@ -16,65 +16,64 @@ import { useSelector } from "react-redux";
 import AddAddressScreen from "../Screens/AddAddressScreen";
 import Address from "../Screens/Address";
 
-
 const StackNavigator = () => {
   function BottomTab() {
     const tab = createBottomTabNavigator();
     return (
-        <tab.Navigator>
-          <tab.Screen
-            options={{
-              headerShown: false,
-              tabBarLabelStyle: { color: "#008E97" },
-              tabBarIcon: ({ focused }) =>
-                focused ? (
-                  <AntDesign name="home" size={24} color="#008E97" />
-                ) : (
-                  <AntDesign name="home" size={24} color="black" />
-                ),
-            }}
-            name="Home"
-            component={HomeScreen}
-          />
-  
-          <tab.Screen
-            options={{
-              headerShown: false,
-              tabBarLabelStyle: { color: "#008E97" },
-              tabBarIcon: ({ focused }) =>
-                focused ? (
-                  <Ionicons name="person-outline" size={24} color="#008E97" />
-                ) : (
-                  <Ionicons name="person-outline" size={24} color="black" />
-                ),
-            }}
-            name="Profile"
-            component={ProfileScreen}
-          />
-          <tab.Screen
-            options={{
-              headerShown: false,
-              tabBarLabelStyle: { color: "#008E97" },
-              tabBarIcon: ({ focused }) =>
-                focused ? (
-                  <AntDesign name="shoppingcart" size={24} color="#008E97" />
-                ) : (
-                  <AntDesign name="shoppingcart" size={24} color="black" />
-                ),
-            }}
-            name="Cart"
-            component={CartScreen}
-          />
-        </tab.Navigator>
+      <tab.Navigator>
+        <tab.Screen
+          options={{
+            headerShown: false,
+            tabBarLabelStyle: { color: "#008E97" },
+            tabBarIcon: ({ focused }) =>
+              focused ? (
+                <AntDesign name="home" size={24} color="#008E97" />
+              ) : (
+                <AntDesign name="home" size={24} color="black" />
+              ),
+          }}
+          name="Home"
+          component={HomeScreen}
+        />
+
+        <tab.Screen
+          options={{
+            headerShown: false,
+            tabBarLabelStyle: { color: "#008E97" },
+            tabBarIcon: ({ focused }) =>
+              focused ? (
+                <Ionicons name="person-outline" size={24} color="#008E97" />
+              ) : (
+                <Ionicons name="person-outline" size={24} color="black" />
+              ),
+          }}
+          name="Profile"
+          component={ProfileScreen}
+        />
+        <tab.Screen
+          options={{
+            headerShown: false,
+            tabBarLabelStyle: { color: "#008E97" },
+            tabBarIcon: ({ focused }) =>
+              focused ? (
+                <AntDesign name="shoppingcart" size={24} color="#008E97" />
+              ) : (
+                <AntDesign name="shoppingcart" size={24} color="black" />
+              ),
+          }}
+          name="Cart"
+          component={CartScreen}
+        />
+      </tab.Navigator>
     );
   }
   const stack = createNativeStackNavigator();
   return (
     <NavigationContainer>
       <stack.Navigator>
-        <stack.Screen
-          name="LoginScreen"
-          component={LoginScreen}
+      <stack.Screen
+          name="RegisterScreen"
+          component={RegisterScreen}
           options={{ headerShown: false }}
         />
         <stack.Screen
@@ -83,13 +82,13 @@ const StackNavigator = () => {
           options={{ headerShown: false }}
         />
         <stack.Screen
-          name="Info"
-          component={ProductInfoScreen}
+          name="LoginScreen"
+          component={LoginScreen}
           options={{ headerShown: false }}
         />
         <stack.Screen
-          name="RegisterScreen"
-          component={RegisterScreen}
+          name="Info"
+          component={ProductInfoScreen}
           options={{ headerShown: false }}
         />
         <stack.Screen

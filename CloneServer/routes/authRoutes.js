@@ -86,6 +86,8 @@ router.post("/signin", async (req, res) => {
 
   try {
     bcrypt.compare(password, savedUser.password, (err, result) => {
+      console.log(savedUser.password," ",password)
+      console.log(result)
       if (result) {
         const key=generateKey()
         console.log("Key",key)
@@ -94,7 +96,8 @@ router.post("/signin", async (req, res) => {
         console.log(token)
         return res.status(422).send({ message: "Logged IN",data:token });
       } else {
-        return res.status(422).send({ message: "Invalid Credentials2" });
+        console.log("Error")
+        return res.status(422).send({ error: "Invalid Credentials2" });
       }
     });
   } catch (err) {
@@ -141,4 +144,11 @@ router.post("/addAddress",async(req,res)=>{
     }
   }
 })
+
+router.get("/getAddress",async(req,res)=>{
+  // const {userId}=req.body
+  console.log(req)
+  return res.json("Okey")
+})
+
 module.exports = router;

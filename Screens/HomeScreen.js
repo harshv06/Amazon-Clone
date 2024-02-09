@@ -28,6 +28,7 @@ import Modal, {
   SlideAnimation,
 } from "react-native-modals";
 import Header from "../Components/Header";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const list = [
   {
@@ -217,6 +218,8 @@ const HomeScreen = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      const token=await AsyncStorage.getAllKeys()
+      console.log(token)
       try {
         fetch("https://fakestoreapi.com/products")
           .then((res) => res.json())

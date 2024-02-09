@@ -31,7 +31,7 @@ const ValidationScreen = ({ route }) => {
         password: data[2],
         Verified: true,
       };
-      fetch("http://192.168.0.104:4000/register", {
+      fetch("http://192.168.0.103:4000/register", {
         method: "POST",
         headers: {
           "Content-Type":"application/json",

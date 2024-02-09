@@ -25,17 +25,17 @@ const Address = () => {
   const [street, setArea] = useState("");
   const [landMark, setLandmark] = useState("");
   const [postalCode, setPincode] = useState("");
-  const {userId, setUserId} = useContext(UserType)
-  const [Uid,setUid]=useState("")
-  const navigation=useNavigation()
-  let uId=""
+  const { userId, setUserId } = useContext(UserType);
+  const [Uid, setUid] = useState("");
+  const navigation = useNavigation();
+  let uId = "";
   useEffect(() => {
     const fetchToken = async () => {
       const token = await AsyncStorage.getItem("authToken");
       const tokenDecoded = jwtDecode(token);
-      uId=tokenDecoded.userId
-      setUserId(uId)
-      setUid(uId)
+      temp = tokenDecoded.userId;
+      setUserId(temp)
+      console.log(temp) 
     };
     fetchToken();
   }, []);
@@ -48,7 +48,7 @@ const Address = () => {
       street,
       landMark,
       postalCode,
-      Uid
+      Uid,
     };
 
     // if (
@@ -59,22 +59,26 @@ const Address = () => {
     //   // address.mobileNo == "" ||
     //   // address.postalCode == ""
     // )
-    if(address.name==""){
+    if (address.name == "") {
       console.log("Please Fill All Fields");
       return;
-    }else{
-      fetch('http://192.168.0.104:4000/addAddress',{
-        method:'POST',
-        headers:{
-          'Content-Type':'application/json'
+    } else {
+      fetch("http://192.168.0.103:4000/addAddress", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        body:JSON.stringify(address)
-      }).then((res)=>res.json()).then((userData)=>{
-        console.log(userData)
-        setTimeout(()=>{
-          Alert.alert("Success","Address added successfully",[{text:'Ok',onPress:()=>navigation.goBack()}])
-        },500)
+        body: JSON.stringify(address),
       })
+        .then((res) => res.json())
+        .then((userData) => {
+          console.log(userData);
+          setTimeout(() => {
+            Alert.alert("Success", "Address added successfully", [
+              { text: "Ok", onPress: () => navigation.goBack() },
+            ]);
+          }, 500);
+        });
     }
   };
   return (
