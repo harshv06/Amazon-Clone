@@ -63,7 +63,7 @@ const Address = () => {
       console.log("Please Fill All Fields");
       return;
     } else {
-      fetch("http://192.168.0.103:4000/addAddress", {
+      fetch("http://192.168.0.105:4000/addAddress", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

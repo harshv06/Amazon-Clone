@@ -3,9 +3,9 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const User = mongoose.model("User");
 const jwt = require("jsonwebtoken");
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
-const crypto = require('crypto')
+const crypto = require("crypto");
 
 require("dotenv").config();
 
@@ -39,7 +39,7 @@ const sendVerificationEmail = async (email, code) => {
 
 router.post("/register", (req, res) => {
   try {
-    const { name, email, password,Verified } = req.body;
+    const { name, email, password, Verified } = req.body;
     if (!name || !email || !password) {
       return res.status(422).send({ error: "Please Fill All Fields" });
     }
@@ -53,11 +53,11 @@ router.post("/register", (req, res) => {
           name,
           email,
           password,
-          Verified
+          Verified,
         });
         try {
           await user.save();
-          res.status(200).send({message:"Registration Done"});
+          res.status(200).send({ message: "Registration Done" });
         } catch (err) {
           return res.status(422).send({ error: "Failed while saving user" });
         }
@@ -69,10 +69,10 @@ router.post("/register", (req, res) => {
 });
 
 router.post("/signin", async (req, res) => {
-  const generateKey=()=>{
-    const key=crypto.randomBytes(32).toString('hex')
-    return key
-  }
+  const generateKey = () => {
+    const key = crypto.randomBytes(32).toString("hex");
+    return key;
+  };
   const { email, password } = req.body;
   if (!email || !password) {
     return res.status(422).send({ error: "Pease Fill All The Fields" });
@@ -86,17 +86,17 @@ router.post("/signin", async (req, res) => {
 
   try {
     bcrypt.compare(password, savedUser.password, (err, result) => {
-      console.log(savedUser.password," ",password)
-      console.log(result)
+      console.log(savedUser.password, " ", password);
+      console.log(result);
       if (result) {
-        const key=generateKey()
-        console.log("Key",key)
-        console.log("Id",savedUser._id)
+        const key = generateKey();
+        console.log("Key", key);
+        console.log("Id", savedUser._id);
         const token = jwt.sign({ userId: savedUser._id }, key);
-        console.log(token)
-        return res.status(422).send({ message: "Logged IN",data:token });
+        console.log(token);
+        return res.status(422).send({ message: "Logged IN", data: token });
       } else {
-        console.log("Error")
+        console.log("Error");
         return res.status(422).send({ error: "Invalid Credentials2" });
       }
     });
@@ -123,32 +123,50 @@ router.post("/verify", async (req, res) => {
   });
 });
 
-router.post("/addAddress",async(req,res)=>{
-  const {Uid}=req.body
-  console.log(req.body)
-  const user=await User.findById(Uid)
-  if(!user){
-    return res.send({error:"User Not Found"})
-  }else{
-    try{
-      const {name,street,houseNo,landMark,mobileNo,postalCode}=req.body
-      const address={
-        name,mobileNo,houseNo,landMark,postalCode,street
-      }
-      console.log(address)
-      user.addresses.push(address)
-      await user.save()
-      return res.send({message:"User Saved"})
-    }catch(err){
-      return res.send({error:"Error While Saving"})
+router.post("/addAddress", async (req, res) => {
+  const { Uid } = req.body;
+  console.log(req.body);
+  const user = await User.findById(Uid);
+  if (!user) {
+    return res.send({ error: "User Not Found" });
+  } else {
+    try {
+      const { name, street, houseNo, landMark, mobileNo, postalCode } =
+        req.body;
+      const address = {
+        name,
+        mobileNo,
+        houseNo,
+        street,            
+        landMark,
+        postalCode,
+      };
+      console.log(address);
+      user.addresses.push(address);
+      await user.save();
+      return res.send({ message: "User Saved" });
+    } catch (err) {
+      return res.send({ error: "Error While Saving" });
     }
   }
-})
+});
 
-router.get("/getAddress",async(req,res)=>{
+router.get("/getAddress/:token", async (req, res) => {
   // const {userId}=req.body
-  console.log(req)
-  return res.json("Okey")
-})
+  console.log(req.params.token);
+  try {
+    const token = req.params.token;
+    const user = await User.findById(token);
+    console.log(user.addresses)
+    if (!user) {
+      return res.send({ error: "User not found" });
+    } else {
+      const address = user.addresses;
+      res.status(200).json({ address });
+    }
+  } catch {
+    res.status(500).json({ message: "Error retrieveing the addresses" });
+  }
+});
 
 module.exports = router;
